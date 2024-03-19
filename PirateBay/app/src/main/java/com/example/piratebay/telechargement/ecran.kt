@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.piratebay.ui.theme.gris
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Typography
 
 /**
@@ -92,16 +94,42 @@ fun PirateAppBar(
 }
 
 
-// Définir un modèle pour une entrée d'image avec un titre
-data class ImageEntry(val title: String, val imageResource: Int)
+// Classe qui regroupe L'image + sa "description" (type de téléchargement, nom, poids, pays)
+data class ImageEntry(
+    val imageResource: Int,
+    val type: String,
+    val titre: String,
+    val size: String,
+    val flagResource: Int // Ajoutez une propriété pour l'image du drapeau
+)
 
 // Fonction qui crée une liste d'exemples d'images,
 // c'est la qu'on définit les images qu'on veut voir dans notre scroll
 private fun generateImageList(): List<ImageEntry> {
     return listOf(
-        ImageEntry("Image 1", R.drawable.pp),
-        ImageEntry("Image 2", R.drawable.pp),
-        ImageEntry("Image 3", R.drawable.pp),
+        ImageEntry( R.drawable.casapapel1,
+            "Série",
+            "La casa de papel s1 e1",
+            "251 Mb",
+            R.drawable.france),
+
+        ImageEntry( R.drawable.casapapel2,
+            "Jeu",
+            "La casa de papel : le jeu",
+            "1 Gb",
+            R.drawable.france),
+
+        ImageEntry( R.drawable.casapapel3,
+            "Film",
+            "La casa de papel la pelicula",
+            "524 Mb",
+            R.drawable.espagne),
+
+        ImageEntry( R.drawable.casapapel3,
+            "Film",
+            "La casa de papel le film",
+            "518 Mb",
+            R.drawable.france),
         // Ajoutez autant d'entrées que nécessaire
     )
 }
@@ -131,7 +159,7 @@ fun ImageList() {
                 // Dans la colonne, on met d'abord l'image
                 Image(
                     painter = painterResource(id = image.imageResource),
-                    contentDescription = image.title,
+                    contentDescription = image.titre,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp), // Hauteur fixe pour les images
@@ -140,8 +168,37 @@ fun ImageList() {
                 // On met un espace
                 Spacer(modifier = Modifier.height(4.dp))
 
-                //Puis son titre
-                Text(text = image.title, color = Color.White, style = MaterialTheme.typography.headlineSmall)
+                // Puis la description avec le drapeau
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = image.type,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 1,
+                        color = Color.White
+                    )
+                    Text(
+                        text = image.titre,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 1,
+                        color = Color.White
+                    )
+                    Text(
+                        text = image.size,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 1,
+                        color = Color.White
+                    )
+                    Image(
+                        painter = painterResource(id = image.flagResource),
+                        contentDescription = "French Flag",
+                        modifier = Modifier.size(24.dp) // Ajustez la taille de l'image selon vos besoins
+                    )
+                }
+
 
 
             }
@@ -157,7 +214,7 @@ fun CupcakeApp() {
         }
     ) { innerPadding ->
         Text(
-            text = "Background?",
+            text = "",
             color = Color.White,
             modifier = Modifier.padding(innerPadding)
         )
