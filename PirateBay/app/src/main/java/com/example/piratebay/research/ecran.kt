@@ -1,8 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,87 +10,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import com.example.piratebay.R
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TextField
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.piratebay.ui.theme.gris
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.Typography
-
-/**
- * enum values that represent the screens in the app
- */
-enum class CupcakeScreen(@StringRes val title: Int) {
-    Start(title = R.string.app_name),
-}
-
-//Pour la Top bar
-@Composable
-fun PirateAppBar(
-) {
-    TopAppBar(
-        title = { Text("test") },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = gris
-        ),
-        actions = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically, // Align elements vertically
-                modifier = Modifier.fillMaxWidth() // Occupy maximum width
-            ) {
-                // Texte à gauche de la top bar :
-                Text("Monke -->")
-
-                // Ajouter un espacement entre le texte et la barre de recherche
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // Barre de recherche
-                TextField(
-                    value = "", // Initial value of the TextField
-                    onValueChange = { /* Do something with the new value */ },
-                    modifier = Modifier.weight(1f), // Occupy remaining space
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Search
-                    ),
-                    placeholder = { Text("Search...") }
-                )
-
-                // Ajouter un espacement entre la barre de recherche et la photo de profil
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // Photo de profil à droite
-                Image(
-                    painter = painterResource(id = R.drawable.pp), // Specify the logo resource
-                    contentDescription = "Logo",
-                    modifier = Modifier.width(48.dp) // Adjust width as needed
-                )
-            }
-        }
-    )
-}
-
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.piratebay.PirateAppBar
+import com.example.piratebay.PirateScreen
+import com.example.piratebay.ui.theme.PirateBayTheme
 
 // Classe qui regroupe L'image + sa "description" (type de téléchargement, nom, poids, pays)
 data class ImageEntry(
@@ -207,28 +142,37 @@ fun ImageList() {
 }
 
 @Composable
-fun CupcakeApp() {
-    Scaffold(
+fun ResearchScreen( ){
+    Scaffold (
         topBar = {
-            PirateAppBar()
+            PirateAppBar(
+            )
         }
     ) { innerPadding ->
-        Text(
-            text = "",
-            color = Color.White,
-            modifier = Modifier.padding(innerPadding)
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Text(
-                text = "My Image Gallery",
-                color = Color.White,
-                modifier = Modifier.padding(16.dp)
-            )
-            ImageList()
-        }
-    }
+                Text(
+                    text = "",
+                    color = Color.White,
+                    modifier = Modifier.padding(innerPadding)
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Text(
+                        text = "My Image Gallery",
+                        color = Color.White,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    ImageList()
+                }
+            }
 }
 
+
+@Preview
+@Composable
+fun StartOrderPreview() {
+    PirateBayTheme {
+        ResearchScreen()
+    }
+}
