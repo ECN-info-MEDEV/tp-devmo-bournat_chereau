@@ -3,7 +3,9 @@
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -38,8 +42,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.piratebay.ui.theme.gris
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Typography
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.piratebay.ui.theme.PirateBayTheme
+import java.time.format.TextStyle
 
 /**
  * enum values that represent the screens in the app
@@ -62,23 +76,68 @@ fun PirateAppBar(
                 verticalAlignment = Alignment.CenterVertically, // Align elements vertically
                 modifier = Modifier.fillMaxWidth() // Occupy maximum width
             ) {
-                // Texte à gauche de la top bar :
-                Text("Monke -->")
+                Icon(
+                    Icons.Outlined.Menu,
+                    contentDescription = "Menu",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(5.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(
+                            color = Color.White,
+                            shape = CircleShape
+                        )
+                        .border(
+                            width = 2.dp, // Épaisseur du contour
+                            color = Color.DarkGray, // Couleur du contour
+                            shape = CircleShape // Forme du contour (ici, un cercle)
+                        )
+                ){
+                    Icon(
+                        Icons.Outlined.Search,
+                        contentDescription = "Menu",
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(5.dp)
+                    )
+                }
+                // Texte à gauche de la barre de recherche (inutilisé pour l'instant)
+                //Text("Monke -->")
 
                 // Ajouter un espacement entre le texte et la barre de recherche
                 Spacer(modifier = Modifier.width(8.dp))
 
                 // Barre de recherche
-                TextField(
-                    value = "", // Initial value of the TextField
-                    onValueChange = { /* Do something with the new value */ },
-                    modifier = Modifier.weight(1f), // Occupy remaining space
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Search
-                    ),
-                    placeholder = { Text("Search...") }
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                ){
+                    TextField(
+                        value = "", // Valeur initiale du TextField
+                        onValueChange = { /* Faites quelque chose avec la nouvelle valeur */ },
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                color = Color.DarkGray,
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                            .clip(RoundedCornerShape(20.dp)),
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Search
+                        ),
+                        placeholder = {
+                            Text(
+                            "Search...",
+                            textAlign = TextAlign.Center,
+                        ) }
+                    )
+                }
 
+            /* (Inutilisé pour l'instant)
                 // Ajouter un espacement entre la barre de recherche et la photo de profil
                 Spacer(modifier = Modifier.width(8.dp))
 
@@ -88,6 +147,8 @@ fun PirateAppBar(
                     contentDescription = "Logo",
                     modifier = Modifier.width(48.dp) // Adjust width as needed
                 )
+             */
+
             }
         }
     )
@@ -134,6 +195,17 @@ private fun generateImageList(): List<ImageEntry> {
     )
 }
 
+@Composable
+fun getColorForType(type: String): Color {
+    // fonction de logique qui définit la couleur du petit cercle devant la catégorie
+    return when (type) {
+        "Film" -> Color.Yellow
+        "Série" -> Color.Red
+        "Jeu" -> Color.Magenta
+        else -> Color.Gray
+    }
+}
+
 // Fonction qui permet de scroll les différentes images
 @Composable
 fun ImageList() {
@@ -156,15 +228,21 @@ fun ImageList() {
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Dans la colonne, on met d'abord l'image
-                Image(
-                    painter = painterResource(id = image.imageResource),
-                    contentDescription = image.titre,
+                // Dans la colonne, on met d'abord l'image (dans une boite pour le centrage et les marges)
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp), // Hauteur fixe pour les images
-                    contentScale = ContentScale.Crop // Echelle d'affichage de l'image
-                )
+                        .height(200.dp) //Hauteur fixe pour les images
+                        .padding(all = 8.dp) // Ajouter une marge de 8dp à droite et à gauche
+                ) {
+                    Image(
+                        painter = painterResource(id = image.imageResource),
+                        contentDescription = image.titre,
+                        modifier = Modifier
+                            .fillMaxSize(), // Remplir l'espace disponible dans le conteneur
+                        contentScale = ContentScale.Crop // Echelle d'affichage de l'image
+                    )
+                }
                 // On met un espace
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -174,6 +252,14 @@ fun ImageList() {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(
+                                color = getColorForType(image.type),
+                                shape = CircleShape
+                            )
+                    )
                     Text(
                         text = image.type,
                         style = MaterialTheme.typography.bodyLarge,
@@ -205,6 +291,15 @@ fun ImageList() {
         }
     }
 }
+
+@Preview (showBackground = true)
+@Composable
+fun PreviewPirateBay() {
+    PirateBayTheme {
+        CupcakeApp()
+    }
+}
+
 
 @Composable
 fun CupcakeApp() {
