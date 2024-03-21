@@ -45,8 +45,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Typography
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.modifier.modifierLocalMapOf
@@ -72,72 +74,76 @@ fun PirateAppBar(
             containerColor = gris
         ),
         actions = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically, // Align elements vertically
-                modifier = Modifier.fillMaxWidth() // Occupy maximum width
-            ) {
-                Icon(
-                    Icons.Outlined.Menu,
-                    contentDescription = "Menu",
+            Column () {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically, // Align elements vertically
                     modifier = Modifier
-                        .size(60.dp)
-                        .padding(5.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .background(
-                            color = Color.White,
-                            shape = CircleShape
-                        )
-                        .border(
-                            width = 2.dp, // Épaisseur du contour
-                            color = Color.DarkGray, // Couleur du contour
-                            shape = CircleShape // Forme du contour (ici, un cercle)
-                        )
-                ){
+                        .fillMaxWidth() // Occupy maximum width
+
+                ) {
                     Icon(
-                        Icons.Outlined.Search,
+                        Icons.Outlined.Menu,
                         contentDescription = "Menu",
                         modifier = Modifier
                             .size(60.dp)
                             .padding(5.dp)
                     )
-                }
-                // Texte à gauche de la barre de recherche (inutilisé pour l'instant)
-                //Text("Monke -->")
-
-                // Ajouter un espacement entre le texte et la barre de recherche
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // Barre de recherche
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp)
-                ){
-                    TextField(
-                        value = "", // Valeur initiale du TextField
-                        onValueChange = { /* Faites quelque chose avec la nouvelle valeur */ },
+                    Box(
                         modifier = Modifier
-                            .border(
-                                width = 2.dp,
-                                color = Color.DarkGray,
-                                shape = RoundedCornerShape(20.dp)
+                            .size(50.dp)
+                            .background(
+                                color = Color.White,
+                                shape = CircleShape
                             )
-                            .clip(RoundedCornerShape(20.dp)),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            imeAction = ImeAction.Search
-                        ),
-                        placeholder = {
-                            Text(
-                            "Search...",
-                            textAlign = TextAlign.Center,
-                        ) }
-                    )
-                }
+                            .border(
+                                width = 2.dp, // Épaisseur du contour
+                                color = Color.DarkGray, // Couleur du contour
+                                shape = CircleShape // Forme du contour (ici, un cercle)
+                            )
+                    ) {
+                        Icon(
+                            Icons.Outlined.Search,
+                            contentDescription = "Menu",
+                            modifier = Modifier
+                                .size(60.dp)
+                                .padding(5.dp)
+                        )
+                    }
 
-            /* (Inutilisé pour l'instant)
+                    // Ajouter un espacement entre le texte et la barre de recherche
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    // Barre de recherche
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp),
+                    ) {
+                        TextField(
+                            value = "", // Valeur initiale du TextField
+                            onValueChange = { /* Faites quelque chose avec la nouvelle valeur */ },
+                            modifier = Modifier
+                                .border(
+                                    width = 2.dp,
+                                    color = Color.DarkGray,
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                                .clip(RoundedCornerShape(20.dp)),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Search
+                            ),
+                            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Left),
+                            placeholder = {
+                                Text(
+                                    "Search...",
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        )
+                    }
+
+                    /* (Inutilisé pour l'instant)
                 // Ajouter un espacement entre la barre de recherche et la photo de profil
                 Spacer(modifier = Modifier.width(8.dp))
 
@@ -149,12 +155,78 @@ fun PirateAppBar(
                 )
              */
 
+                }
+
             }
         }
     )
 }
 
+//Barre de filtre (****A TERMINER****)
+@Composable
+fun PirateFilterBar() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.Black)
+            .height(40.dp)
+            .padding(all = 2.dp),
 
+        ) {
+        Box(
+            modifier = Modifier
+                .padding(all = 2.dp)
+        ) {
+            Row(){
+                Text(
+                    text = "Trier par",
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    Icons.Outlined.KeyboardArrowRight,
+                    contentDescription = "Open filter",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(5.dp),
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Catégorie",
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    Icons.Outlined.KeyboardArrowRight,
+                    contentDescription = "Open filter",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(5.dp),
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Langue",
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    Icons.Outlined.KeyboardArrowRight,
+                    contentDescription = "Open filter",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(5.dp),
+                    tint = Color.White
+                )
+
+            }
+
+        }
+
+    }
+}
 // Classe qui regroupe L'image + sa "description" (type de téléchargement, nom, poids, pays)
 data class ImageEntry(
     val imageResource: Int,
@@ -229,6 +301,7 @@ fun ImageList() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Dans la colonne, on met d'abord l'image (dans une boite pour le centrage et les marges)
+                Spacer(modifier = Modifier.height(40.dp))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -305,7 +378,12 @@ fun PreviewPirateBay() {
 fun CupcakeApp() {
     Scaffold(
         topBar = {
-            PirateAppBar()
+            Column {
+                PirateAppBar()
+                PirateFilterBar()
+            }
+
+
         }
     ) { innerPadding ->
         Text(
