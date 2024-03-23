@@ -14,7 +14,7 @@ class Main : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PirateBayTheme {
-                CupcakeApp()
+                PirateBayApp()
             }
         }
     }

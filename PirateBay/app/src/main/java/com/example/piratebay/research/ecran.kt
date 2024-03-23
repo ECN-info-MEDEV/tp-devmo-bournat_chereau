@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,6 +55,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.piratebay.PirateAppBar
+import com.example.piratebay.PirateFilterBar
+import com.example.piratebay.PirateScreen
 import com.example.piratebay.ui.theme.PirateBayTheme
 import java.time.format.TextStyle
 
@@ -64,169 +70,7 @@ enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
 }
 
-//Pour la Top bar
-@Composable
-fun PirateAppBar(
-) {
-    TopAppBar(
-        title = { Text("test") },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = gris
-        ),
-        actions = {
-            Column () {
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically, // Align elements vertically
-                    modifier = Modifier
-                        .fillMaxWidth() // Occupy maximum width
-
-                ) {
-                    Icon(
-                        Icons.Outlined.Menu,
-                        contentDescription = "Menu",
-                        modifier = Modifier
-                            .size(60.dp)
-                            .padding(5.dp)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .background(
-                                color = Color.White,
-                                shape = CircleShape
-                            )
-                            .border(
-                                width = 2.dp, // Épaisseur du contour
-                                color = Color.DarkGray, // Couleur du contour
-                                shape = CircleShape // Forme du contour (ici, un cercle)
-                            )
-                    ) {
-                        Icon(
-                            Icons.Outlined.Search,
-                            contentDescription = "Menu",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(5.dp)
-                        )
-                    }
-
-                    // Ajouter un espacement entre le texte et la barre de recherche
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    // Barre de recherche
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp),
-                    ) {
-                        TextField(
-                            value = "", // Valeur initiale du TextField
-                            onValueChange = { /* Faites quelque chose avec la nouvelle valeur */ },
-                            modifier = Modifier
-                                .border(
-                                    width = 2.dp,
-                                    color = Color.DarkGray,
-                                    shape = RoundedCornerShape(20.dp)
-                                )
-                                .clip(RoundedCornerShape(20.dp)),
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                imeAction = ImeAction.Search
-                            ),
-                            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Left),
-                            placeholder = {
-                                Text(
-                                    "Search...",
-                                    textAlign = TextAlign.Center,
-                                )
-                            }
-                        )
-                    }
-
-                    /* (Inutilisé pour l'instant)
-                // Ajouter un espacement entre la barre de recherche et la photo de profil
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // Photo de profil à droite
-                Image(
-                    painter = painterResource(id = R.drawable.pp), // Specify the logo resource
-                    contentDescription = "Logo",
-                    modifier = Modifier.width(48.dp) // Adjust width as needed
-                )
-             */
-
-                }
-
-            }
-        }
-    )
-}
-
-//Barre de filtre (****A TERMINER****)
-@Composable
-fun PirateFilterBar() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Color.Black)
-            .height(40.dp)
-            .padding(all = 2.dp),
-
-        ) {
-        Box(
-            modifier = Modifier
-                .padding(all = 2.dp)
-        ) {
-            Row(){
-                Text(
-                    text = "Trier par",
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    Icons.Outlined.KeyboardArrowRight,
-                    contentDescription = "Open filter",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(5.dp),
-                    tint = Color.White
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "Catégorie",
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    Icons.Outlined.KeyboardArrowRight,
-                    contentDescription = "Open filter",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(5.dp),
-                    tint = Color.White
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "Langue",
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    Icons.Outlined.KeyboardArrowRight,
-                    contentDescription = "Open filter",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(5.dp),
-                    tint = Color.White
-                )
-
-            }
-
-        }
-
-    }
-}
 // Classe qui regroupe L'image + sa "description" (type de téléchargement, nom, poids, pays)
 data class ImageEntry(
     val imageResource: Int,
@@ -280,7 +124,7 @@ fun getColorForType(type: String): Color {
 
 // Fonction qui permet de scroll les différentes images
 @Composable
-fun ImageList() {
+fun ImageList(navController: NavController) {
     // D'abord on définit une variable avec notre liste d'images
     val images = generateImageList()
 
@@ -312,7 +156,10 @@ fun ImageList() {
                         painter = painterResource(id = image.imageResource),
                         contentDescription = image.titre,
                         modifier = Modifier
-                            .fillMaxSize(), // Remplir l'espace disponible dans le conteneur
+                            .fillMaxSize()// Remplir l'espace disponible dans le conteneur
+                            .clickable {
+                                // Navigate to another screen when the image is clicked
+                                navController.navigate(PirateScreen.Download.name)},
                         contentScale = ContentScale.Crop // Echelle d'affichage de l'image
                     )
                 }
@@ -369,20 +216,20 @@ fun ImageList() {
 @Composable
 fun PreviewPirateBay() {
     PirateBayTheme {
-        CupcakeApp()
+        ResearchScreen(rememberNavController())
     }
 }
 
 
+
 @Composable
-fun CupcakeApp() {
-    Scaffold(
+fun ResearchScreen( navController: NavController){
+    Scaffold (
         topBar = {
             Column {
                 PirateAppBar()
                 PirateFilterBar()
             }
-
 
         }
     ) { innerPadding ->
@@ -400,8 +247,16 @@ fun CupcakeApp() {
                 color = Color.White,
                 modifier = Modifier.padding(16.dp)
             )
-            ImageList()
+            ImageList(navController)
         }
     }
 }
 
+
+@Preview
+@Composable
+fun StartOrderPreview() {
+    PirateBayTheme {
+        ResearchScreen(rememberNavController())
+    }
+}
