@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Pirate Bay</string>
     <string name="back_button">Back</string>
+    <string name="download">Back</string>
 </resources>
