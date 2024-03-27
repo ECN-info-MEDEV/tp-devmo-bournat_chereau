@@ -1,6 +1,7 @@
 package com.example.piratebay
 
 import ResearchScreen
+import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,6 +53,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import com.example.piratebay.download.ImageScreen
+import com.example.piratebay.download.TelScreen
 
 
 //Pour la Top bar
@@ -278,6 +280,7 @@ enum class PirateScreen(@StringRes val title: Int) {
     Download(title = R.string.download)
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun PirateBayApp(
     navController: NavHostController = rememberNavController()
@@ -301,7 +304,7 @@ fun PirateBayApp(
                 }
             }
             composable(route = PirateScreen.Download.name) {
-                ImageScreen()
+                TelScreen(navController)
             }
         }
     }

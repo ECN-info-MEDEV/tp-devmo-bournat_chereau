@@ -3,9 +3,11 @@ package com.example.piratebay.download
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +48,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -60,7 +63,7 @@ import com.example.piratebay.ui.theme.gris
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PirateTelBar(
+fun PirateTelBar(navController: NavController
 ) {
     TopAppBar(
         title = { Text("test") },
@@ -95,6 +98,9 @@ fun PirateTelBar(
                                 color = Color.DarkGray, // Couleur du contour
                                 shape = CircleShape // Forme du contour (ici, un cercle)
                             )
+                            .clickable {
+                                // Navigate to another screen when the image is clicked
+                                navController.navigate(PirateScreen.Start.name)}
                     ) {
                         Icon(
                             Icons.Outlined.ArrowBack,
@@ -163,39 +169,27 @@ fun PirateTelBar(
 }
 
 @Composable
-fun TelScreen( navController: NavController){
+fun TelScreen(navController: NavController){
     Scaffold (
         topBar = {
             Column {
-                PirateTelBar()
+                PirateTelBar(navController)
             }
         }
     ) {innerPadding ->
-        Text(
-            text = "",
-            color = Color.White,
-            modifier = Modifier.padding(innerPadding)
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ){
-            Spacer(modifier = Modifier.height(45.dp))
-            ImageScreen()
-        }
-
+        // ImageScreen() n'est plus enveloppé par une colonne inutile
+        ImageScreen(innerPadding)
     }
 }
 
 @Composable
-fun ImageScreen() {
-    // État pour suivre quelle section est active
+fun ImageScreen(innerPadding: PaddingValues) {
     var selectedSection by remember { mutableStateOf(Section.Description) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(innerPadding)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -209,7 +203,7 @@ fun ImageScreen() {
                 .height(200.dp)
         )
 
-        // Boutons pour la description et les commentaires
+        // BOutons descriptoion / comment
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -222,27 +216,39 @@ fun ImageScreen() {
             }
         }
 
-        // Afficher la section correspondante en fonction de l'état
         when (selectedSection) {
             Section.Description -> DescriptionSection()
             Section.Comment -> CommentSection()
         }
-        DownloadButton()
+            DownloadButton()
+            ReportButton()
+
     }
 }
 
 // Composables pour la description et les commentaires
 @Composable
 fun DescriptionSection() {
-    Text(text = "Description section content")
+    Column {
+        Text(
+            text = "Proposed by MyMonke :",
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = "Huit voleurs font une prise d'otages dans la Maison royale de la Monnaie d'Espagne, tandis qu'un génie du crime manipule la police pour mettre son plan à exécution",
+            color = Color.White
+        )
+    }
 }
 
 @Composable
 fun CommentSection() {
-    Text(text = "Comment section content")
+    Text(text = "Comment section content",
+         color = Color.White)
 }
 
-// Composable pour le bouton de téléchargement
 @Composable
 fun DownloadButton() {
     // État pour suivre si le téléchargement a été effectué
@@ -250,10 +256,11 @@ fun DownloadButton() {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(16.dp)
+            .fillMaxWidth()
+            .height(50.dp)
             .background(Color.Black, shape = RoundedCornerShape(8.dp)),
-        contentAlignment = Alignment.Center
+
     ) {
         Button(
             onClick = {
@@ -269,6 +276,29 @@ fun DownloadButton() {
     }
 }
 
+// Composable pour le bouton de report
+@Composable
+fun ReportButton() {
+    val (isReported, setIsReported) = remember { mutableStateOf(false) }
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .height(50.dp)
+            .background(Color.Black, shape = RoundedCornerShape(8.dp)),
+
+    ) {
+        Button(
+            onClick = {
+                setIsReported(true)
+                // Gérer le clic sur le bouton de rapport
+            },
+            modifier = Modifier.size(200.dp)
+        ) {
+            Text(text = if (isReported) "Report OK" else "Report", color = Color.White)
+        }
+    }
+}
 // Enum pour les sections
 enum class Section {
     Description,
